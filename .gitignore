@@ -1,6 +1,7 @@
 ### Example user template
 # JS files
 node_modules
+package-lock.json
 
 # IntelliJ project files
 .idea
