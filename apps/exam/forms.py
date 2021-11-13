@@ -1,11 +1,11 @@
 from django.core.exceptions import ValidationError
-from django.forms import ModelForm
+from django import forms
 from django.utils.translation import ugettext as _
 
 from .models import Answer
 
 
-class AnswerAdminForm(ModelForm):
+class AnswerAdminForm(forms.ModelForm):
     def clean(self):
         cleaned_data = super().clean()
 

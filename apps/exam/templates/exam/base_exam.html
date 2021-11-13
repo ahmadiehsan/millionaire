@@ -1,0 +1,18 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% load static widget_tweaks %}
+
+{% block title %}Millionaire Game{% endblock %}
+
+{% block content %}
+    <form method="post" action="{% url "exam:ali" exam_uuid=exam_uuid %}">
+        {% csrf_token %}
+        {{ question }}
+        {% for answer in question.answers.all %}
+            {{ answer }}
+        {% endfor %}
+
+        <button type="submit" class="btn btn-danger">Sign Up</button>
+    </form>
+{% endblock %}

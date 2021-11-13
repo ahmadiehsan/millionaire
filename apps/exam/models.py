@@ -2,6 +2,7 @@ from django.contrib.auth import get_user_model
 from django.db import models
 from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 from helpers.models import BaseModel
 
@@ -10,6 +11,16 @@ User = get_user_model()
 
 class Question(BaseModel):
     text = models.CharField(max_length=255, verbose_name=_('Text'))
+    # score = models.IntegerField(
+    #     validators=[MinValueValidator(5), MaxValueValidator(20)], verbose_name=_('Question Score')
+    # )
+
+    # @property
+    # def answers(self):
+    #     try:
+    #         return Answer.objects.filter(question=self)
+    #     except Answer.DoesNotExist:
+    #         return None
 
     @property
     def correct_answer(self):
