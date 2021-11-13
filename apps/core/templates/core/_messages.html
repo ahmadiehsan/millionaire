@@ -1,0 +1,9 @@
+{% load custom %}
+
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-{{ message.level_tag|bootstrap_level_tag_map }}" role="alert">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endif %}

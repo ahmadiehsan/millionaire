@@ -1,0 +1,22 @@
+.errorlist.nonfield {
+    position: relative;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+    border: 1px solid transparent;
+    border-radius: .25rem;
+    color: #842029;
+    background-color: #f8d7da;
+    border-color: #f5c2c7;
+}
+
+.radio-control {
+    list-style-type: none;
+    padding: 0;
+}
+
+label.required::after {
+    content: "*";
+    padding-left: 5px;
+    color: red;
+}

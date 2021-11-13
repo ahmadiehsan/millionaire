@@ -1,0 +1,24 @@
+{% extends 'user/auth_base.html' %}
+{% load static widget_tweaks %}
+
+{% block title %}Sign Up{% endblock %}
+
+{% block tab_content %}
+    <form method="post" action="{% url 'user:sign-up' %}">
+        {{ form.non_field_errors }}
+        {% csrf_token %}
+
+        {% for field in form %}
+            {% include 'core/_input_horizontal.html' with field=field %}
+        {% endfor %}
+
+        <p>By signing up, you agree to our <a href="{% url 'core:terms-and-conditions' %}">Terms of Services</a></p>
+        <button type="submit" class="btn btn-danger">Sign Up</button>
+    </form>
+{% endblock %}
+
+{% block js %}
+    <script>
+        id_birthdate.max = new Date().toISOString().split("T")[0];
+    </script>
+{% endblock %}

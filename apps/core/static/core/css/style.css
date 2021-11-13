@@ -1,0 +1,21 @@
+.low-opacity {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+.text-justify {
+    text-align: justify !important;
+}
+
+/* LG */
+@media (min-width: 992px) {
+    .main-navbar .nav-link {
+        background: #dc3545 !important;
+        border-radius: 999px;
+        color: #fff !important;
+        margin-right: 5px;
+        margin-left: 5px;
+        padding-right: 20px !important;
+        padding-left: 20px !important;
+    }
+}

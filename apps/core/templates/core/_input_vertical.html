@@ -1,0 +1,19 @@
+{% load widget_tweaks %}
+
+<div class="mb-3">
+    {% if field.field.required %}
+        {{ field|add_label_class:'form-label required' }}
+    {% else %}
+        {{ field|add_label_class:'form-label' }}
+    {% endif %}
+
+    {% if field.field.widget.input_type == 'radio' %}
+        {{ field|add_class:'radio-control' }}
+        {{ field.errors }}
+    {% else %}
+        {{ field|add_class:'form-control'|add_error_class:'is-invalid' }}
+        {% if field.help_text %}
+            <div class="form-text">{{ field.help_text }}</div>{% endif %}
+        {{ field.errors }}
+    {% endif %}
+</div>
