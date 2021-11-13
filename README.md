@@ -9,7 +9,7 @@ cd millionaire
 virtualenv -p python3 venv
 source venv/bin/activate
 
-cp main_app/.env.exaple main_app/.evn
+cp main_app/.env.example main_app/.evn
 vim main_app/.evn
 
 pip install -r requirements/dev.txt
