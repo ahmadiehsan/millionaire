@@ -1,27 +1,29 @@
 {% extends 'core/base.html' %}
-{% load static %}
+{% load static i18n %}
 
 {% load static widget_tweaks %}
 
-{% block title %}Result{% endblock %}
+{% block title %}{% trans "Result" %}{% endblock %}
 
 {% block content %}
     <div class="container">
+        {% include 'core/_messages.html' with messages=messages %}
+
         <div class="row">
-            <div class="col-lg-8 offset-2">
+            <div class="col-lg-8 offset-lg-2">
                 <ul class="list-group">
-                    <li class="list-group-item list-group-item-secondary text-center">Game Data</li>
+                    <li class="list-group-item list-group-item-secondary text-center">{% trans "Game Data" %}</li>
                     <li class="list-group-item">
-                        <span class="fw-bold">Final Score:</span>
+                        <span class="fw-bold">{% trans "Final Score:" %}</span>
                         <span class="text-danger">{{ game.score }}</span>
                     </li>
                     <li class="list-group-item">
-                        <span class="fw-bold">Time:</span>
+                        <span class="fw-bold">{% trans "Time:" %}</span>
                         {{ game.create_time }}
                     </li>
                 </ul>
                 <ul class="list-group mt-4">
-                    <li class="list-group-item list-group-item-secondary text-center">Game Questions</li>
+                    <li class="list-group-item list-group-item-secondary text-center">{% trans "Game Questions" %}</li>
                     {% for question in game.questions.all %}
                         <li class="list-group-item">{{ question.text }}</li>
                     {% endfor %}

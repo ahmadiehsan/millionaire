@@ -1,10 +1,11 @@
-from django.urls import path
+from django.urls import path, reverse_lazy
+from django.views.generic import RedirectView
 
-from .views import HomeView, TermsAndConditionsView
+from .views import TermsAndConditionsView
 
 app_name = 'core'
 
 urlpatterns = [
-    path('', HomeView.as_view(), name='home'),
+    path('', RedirectView.as_view(url=reverse_lazy('game:statistics'), permanent=False), name='home'),
     path('terms-and-conditions/', TermsAndConditionsView.as_view(), name='terms-and-conditions'),
 ]

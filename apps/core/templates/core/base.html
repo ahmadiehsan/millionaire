@@ -1,4 +1,4 @@
-{% load static %}
+{% load static i18n %}
 
 <html lang="en">
 <head>
@@ -16,7 +16,7 @@
 
     {% block css %}{% endblock %}
 
-    <title>{% block title %}{% endblock %} | Millionaire</title>
+    <title>{% block title %}{% endblock %} | {% trans "Millionaire" %}</title>
 </head>
 <body class="pb-5">
 

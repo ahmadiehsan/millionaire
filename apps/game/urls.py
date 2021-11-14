@@ -1,11 +1,12 @@
 from django.urls import path, re_path
 
 from helpers.constants import UUID_REGEX
-from .views import GameSpaceView, ResultView
+from .views import GameSpaceView, ResultView, StatisticsView
 
 app_name = 'game'
 
 urlpatterns = [
+    path('', StatisticsView.as_view(), name='statistics'),
     path(
         'result/<game_id>',
         ResultView.as_view(),
