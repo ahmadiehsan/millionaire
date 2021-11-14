@@ -1,0 +1,35 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% load static widget_tweaks %}
+
+{% block title %}Result{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 offset-2">
+                <ul class="list-group">
+                    <li class="list-group-item list-group-item-secondary text-center">Game Data</li>
+                    <li class="list-group-item">
+                        <span class="fw-bold">Username:</span>
+                        {{ game.user.username }}
+                    </li>
+                    <li class="list-group-item">
+                        <span class="fw-bold">Final Score:</span>
+                        {{ game.score }}</li>
+                    <li class="list-group-item">
+                        <span class="fw-bold">Time:</span>
+                        {{ game.create_time }}
+                    </li>
+                </ul>
+                <ul class="list-group mt-4">
+                    <li class="list-group-item list-group-item-secondary text-center">Game Questions</li>
+                    {% for question in game.questions.all %}
+                        <li class="list-group-item">{{ question.text }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+{% endblock %}

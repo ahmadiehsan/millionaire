@@ -16,6 +16,8 @@ django-widget-tweaks==1.4.9
     # via -r requirements/base.in
 gunicorn==20.1.0
     # via -r requirements/prod.in
+psycopg2-binary==2.9.2
+    # via -r requirements/base.in
 pytz==2021.3
     # via django
 sqlparse==0.4.2

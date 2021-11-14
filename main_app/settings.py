@@ -54,7 +54,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'apps.core',
-    'apps.exam',
+    'apps.game',
     'apps.user',
 
     'django_node_assets',
@@ -69,6 +69,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    'helpers.middleware.CheckProjectIsConfigured',
 ]
 
 ROOT_URLCONF = 'main_app.urls'
@@ -101,8 +103,12 @@ WSGI_APPLICATION = 'main_app.wsgi.application'
 # Database
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': get_env_value('POSTGRES_DB_NAME'),
+        'USER': get_env_value('POSTGRES_DB_USER'),
+        'PASSWORD': get_env_value('POSTGRES_DB_PASSWORD'),
+        'HOST': get_env_value('POSTGRES_DB_HOST'),
+        'PORT': get_env_value('POSTGRES_DB_PORT'),
     }
 }
 
@@ -150,10 +156,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Auth
 AUTH_USER_MODEL = 'user.User'
-LOGIN_URL = '/users/sign-in/'
+LOGIN_URL = '/user/sign-in/'
 LOGIN_REDIRECT_URL = '/'
-LOGOUT_URL = '/users/sign-out/'
-LOGOUT_REDIRECT_URL = '/users/sign-in/'
+LOGOUT_URL = '/user/sign-out/'
+LOGOUT_REDIRECT_URL = '/user/sign-in/'
 
 # Log
 LOGGING = {

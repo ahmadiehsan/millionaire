@@ -15,4 +15,6 @@ vim main_app/.env
 pip install -r requirements/dev.txt
 python manage.py npminstall
 python manage.py migrate
+python manage.py initialize
+python manage.py runserver
 ```

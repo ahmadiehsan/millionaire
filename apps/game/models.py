@@ -12,21 +12,15 @@ User = get_user_model()
 class Question(BaseModel):
     text = models.CharField(max_length=255, verbose_name=_('Text'))
     score = models.IntegerField(
-        validators=[MinValueValidator(5), MaxValueValidator(20)], verbose_name=_('Question Score')
+        validators=[MinValueValidator(5), MaxValueValidator(20)],
+        verbose_name=_('Question Score')
     )
 
-    # @property
-    # def answers(self):
-    #     try:
-    #         return Answer.objects.filter(question=self)
-    #     except Answer.DoesNotExist:
-    #         return None
-
     @property
-    def correct_answer(self):
+    def correct_option(self):
         try:
-            return Answer.objects.get(question=self, is_correct=True)
-        except Answer.DoesNotExist:
+            return QuestionOption.objects.get(question=self, is_correct=True)
+        except QuestionOption.DoesNotExist:
             return None
 
     def __str__(self):
@@ -37,22 +31,22 @@ class Question(BaseModel):
         verbose_name_plural = _('Questions')
 
 
-class Answer(BaseModel):
+class QuestionOption(BaseModel):
     text = models.CharField(max_length=255, verbose_name=_('Text'))
-    question = models.ForeignKey(Question, verbose_name=_('Question'), on_delete=models.CASCADE, related_name='answers')
-    is_correct = models.BooleanField(verbose_name=_('Is Correct Answer?'))
+    question = models.ForeignKey(Question, verbose_name=_('Question'), on_delete=models.CASCADE, related_name='options')
+    is_correct = models.BooleanField(verbose_name=_('Is Correct?'))
 
     def __str__(self):
         return self.text
 
     class Meta:
-        verbose_name = _('Answer')
-        verbose_name_plural = _('Answers')
+        verbose_name = _('Question Option')
+        verbose_name_plural = _('Question Options')
         constraints = [
             models.UniqueConstraint(
                 fields=['question', 'is_correct'],
                 condition=Q(is_correct=True),
-                name='unique_correct_answer_for_each_question'
+                name='unique_correct_option_for_each_question'
             ),
         ]
 
@@ -63,7 +57,7 @@ class Game(BaseModel):
     score = models.IntegerField(verbose_name=_('Final Score'))
 
     def __str__(self):
-        return self.user
+        return self.user.username
 
     class Meta:
         verbose_name = _('Game')
