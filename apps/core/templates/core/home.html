@@ -16,14 +16,11 @@
                         List of Top Players
                     </li>
 
-                    {% for top_game in top_games %}
+                    {% for top_player in top_players %}
                         <li class="list-group-item">
                             {{ forloop.counter }} -
-                            {{ top_game.user.username }}
-                            ({{ top_game.score }} point)
-                            <a href="{% url 'game:result' game_id=top_game.id %}">
-                                See Details
-                            </a>
+                            {{ top_player.user__username }}
+                            ({{ top_player.max_score }} point)
                         </li>
                     {% empty %}
                         <li class="list-group-item text-center">There is no game yet!</li>

@@ -178,5 +178,5 @@ class ResultView(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context.update({'game': get_object_or_404(Game, id=kwargs['game_id'])})
+        context.update({'game': get_object_or_404(Game, id=kwargs['game_id'], user=self.request.user)})
         return context

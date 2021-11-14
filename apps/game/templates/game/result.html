@@ -12,12 +12,9 @@
                 <ul class="list-group">
                     <li class="list-group-item list-group-item-secondary text-center">Game Data</li>
                     <li class="list-group-item">
-                        <span class="fw-bold">Username:</span>
-                        {{ game.user.username }}
-                    </li>
-                    <li class="list-group-item">
                         <span class="fw-bold">Final Score:</span>
-                        {{ game.score }}</li>
+                        <span class="text-danger">{{ game.score }}</span>
+                    </li>
                     <li class="list-group-item">
                         <span class="fw-bold">Time:</span>
                         {{ game.create_time }}
