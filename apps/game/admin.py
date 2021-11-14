@@ -14,7 +14,7 @@ class GameAdmin(BaseAdmin):
 
 @admin.register(Question)
 class QuestionAdmin(BaseAdmin):
-    pass
+    list_display = ('__str__', 'score')
 
 
 @admin.register(QuestionOption)

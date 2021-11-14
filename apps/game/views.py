@@ -3,6 +3,8 @@ import uuid
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.cache import cache
 from django.core.exceptions import ValidationError
+from django.db import transaction
+from django.db.models import Sum
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse, reverse_lazy
@@ -30,7 +32,7 @@ class GameSpaceView(LoginRequiredMixin, View):
         user = request.user
 
         if game_identifier == 'new':
-            questions = Question.objects.filter(options__is_correct__isnull=False).order_by('?')[:5]
+            questions = Question.objects.all().order_by('?')[:5]
             game_identifier = uuid.uuid4()
             cache_data = {
                 'user_id': str(user.id),
@@ -39,7 +41,8 @@ class GameSpaceView(LoginRequiredMixin, View):
                 'questions': [
                     {
                         'id': str(question.id),
-                        'user_selected_option_id': None
+                        'user_selected_option_id': None,
+                        'was_correct': None,
                     } for question in questions
                 ],
             }
@@ -86,6 +89,7 @@ class GameSpaceView(LoginRequiredMixin, View):
                 'options': options,
                 'display_step': cache_data['current_step'] + 1,
                 'current_step_type': cache_data['current_step_type'],
+                'is_final_step': self._is_final_step(cache_data),
                 'game_identifier': game_identifier
             }
 
@@ -101,36 +105,39 @@ class GameSpaceView(LoginRequiredMixin, View):
             except KeyError:
                 raise ValidationError('c')
 
+            if QuestionOption.objects.get(id=user_answer).is_correct:
+                cache_data['questions'][cache_data['current_step']]['was_correct'] = True
+            else:
+                cache_data['questions'][cache_data['current_step']]['was_correct'] = False
+
+            cache_data['questions'][cache_data['current_step']]['user_selected_option_id'] = user_answer
+            cache_data['current_step_type'] = self.StepTypes.RESULT
+            cache.set(game_identifier, cache_data)
+
+        elif cache_data['current_step_type'] == self.StepTypes.RESULT:
             if not self._is_final_step(cache_data):
-                cache_data['questions'][cache_data['current_step']]['user_selected_option_id'] = user_answer
-                cache_data['current_step_type'] = self.StepTypes.RESULT
+                cache_data['current_step_type'] = self.StepTypes.QUESTION
+                cache_data['current_step'] += 1
                 cache.set(game_identifier, cache_data)
 
             else:
-                question_ids = []
-                final_score = 0
+                question_uuids = []
+                passed_question_ids = []
                 for question_dict in cache_data['questions']:
-                    question_ids.append(question_dict['id'])
+                    question_uuids.append(uuid.UUID(question_dict['id']))
+                    if question_dict['was_correct']:
+                        passed_question_ids.append(question_dict['id'])
 
-                questions = Question.objects.filter(id__in=question_ids)
-                QuestionOption.objects.filter(question_id__in=question_ids, is_correct=True)
+                final_score = Question.objects.filter(id__in=passed_question_ids).aggregate(Sum('score'))['score__sum']
+                with transaction.atomic():
+                    game = Game.objects.create(
+                        user_id=cache_data['user_id'],
+                        score=final_score
+                    )
+                    game.questions.add(*question_uuids)
 
-                for question in questions:
-                    if str(question.correct_option.id) == cache_data[str(question.id)]['user_selected_option_id']:
-                        final_score += question.score
-
-                game = Game.objects.create(
-                    user_id=cache_data['user_id'],
-                    questions=questions,
-                    score=final_score
-                )
-
+                cache.delete(game_identifier)
                 return HttpResponseRedirect(reverse('game:result', kwargs={'game_id': game.id}))
-
-        elif cache_data['current_step_type'] == self.StepTypes.RESULT:
-            cache_data['current_step_type'] = self.StepTypes.QUESTION
-            cache_data['current_step'] += 1
-            cache.set(game_identifier, cache_data)
 
         return HttpResponseRedirect(reverse('game:game-space', kwargs={'game_identifier': game_identifier}))
 
