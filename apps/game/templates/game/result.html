@@ -7,6 +7,8 @@
 
 {% block content %}
     <div class="container">
+        {% include 'core/_messages.html' with messages=messages %}
+
         <div class="row">
             <div class="col-lg-8 offset-lg-2">
                 <ul class="list-group">

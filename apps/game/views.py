@@ -1,13 +1,15 @@
 import uuid
 
+from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.cache import cache
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ValidationError, PermissionDenied
 from django.db import transaction
 from django.db.models import Sum, Max
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse, reverse_lazy
+from django.utils.translation import ugettext as _
 from django.views.generic import View, TemplateView
 
 from .models import Question, Game, QuestionOption
@@ -103,7 +105,7 @@ class GameSpaceView(LoginRequiredMixin, View):
             try:
                 user_answer = request.POST['answer']
             except KeyError:
-                raise ValidationError('c')
+                raise Http404(_('Question option does not exist'))
 
             if QuestionOption.objects.get(id=user_answer).is_correct:
                 cache_data['questions'][cache_data['current_step']]['was_correct'] = True
@@ -137,6 +139,8 @@ class GameSpaceView(LoginRequiredMixin, View):
                     game.questions.add(*question_uuids)
 
                 cache.delete(game_identifier)
+                messages.success(request, _('Finished, you can see the game result here!'))
+
                 return HttpResponseRedirect(reverse('game:result', kwargs={'game_id': game.id}))
 
         return HttpResponseRedirect(reverse('game:game-space', kwargs={'game_identifier': game_identifier}))
@@ -145,10 +149,10 @@ class GameSpaceView(LoginRequiredMixin, View):
     def _get_and_validate_cache_data(game_identifier, user):
         cache_data = cache.get(game_identifier)
         if not cache_data:
-            raise ValidationError('a')
+            raise Http404(_('This game is not available'))
 
         if str(user.id) != cache_data['user_id']:
-            raise ValidationError('b')
+            raise PermissionDenied('You do not have access to this game')
 
         return cache_data
 
@@ -158,7 +162,7 @@ class GameSpaceView(LoginRequiredMixin, View):
         try:
             question = Question.objects.prefetch_related('options').get(id=current_question_id)
         except Question.DoesNotExist:
-            raise ValidationError('d')
+            raise Http404(_('Question does not exist'))
 
         return question
 
