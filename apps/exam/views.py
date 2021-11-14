@@ -9,7 +9,7 @@ from django.utils.translation import ugettext as _
 from django.db import models
 from django.urls import reverse, reverse_lazy
 from django.views.generic import FormView, View, CreateView, TemplateView
-from .models import Question, Game
+from .models import Question, Game, Answer
 
 
 class ExamView(TemplateView, LoginRequiredMixin):
@@ -42,23 +42,27 @@ class ExamView(TemplateView, LoginRequiredMixin):
             }
             cache.set(exam_uuid, game_cache_data, 10 * 60 * 60)
 
-            return HttpResponseRedirect(reverse('exam:ali', kwargs={'exam_uuid': exam_uuid}))
+            return HttpResponseRedirect(reverse('exam:do-exam', kwargs={'exam_uuid': exam_uuid}))
 
         else:
-            game_cache_data = self._get_game_cache_data_and_validate_it(exam_uuid, user)
+            game_cache_data = self._get_and_validate_game_cache_data(exam_uuid, user)
             context = {
                 'question': self._get_question_obj_from_game_cache_data(game_cache_data),
                 'step_type': game_cache_data['step_type'],
                 'exam_uuid': exam_uuid
             }
+            if game_cache_data['current_step'] == self.StepType.RESULT:
+                answer_id = game_cache_data['questions'][game_cache_data['current_step']]['answer_id']
+                context.update({'user_answer': Answer.objects.get(answer_id)})
+
             # if self._is_final_step(game_cache_data):
-            #     Game.
+            #     Game.objects.get()
 
             return render(request, template_name='exam/base_exam.html', context=context)
 
     def post(self, request, exam_uuid, *args, **kwargs):
         user = request.user
-        game_cache_data = self._get_game_cache_data_and_validate_it(exam_uuid, user)
+        game_cache_data = self._get_and_validate_game_cache_data(exam_uuid, user)
         if game_cache_data['step_type'] == self.StepType.QUESTION:
             try:
                 answer_id = request.POST['answer_id']
@@ -77,24 +81,26 @@ class ExamView(TemplateView, LoginRequiredMixin):
 
                 questions = Question.objects.filter(id__in=question_ids)
 
-                # for question in questions:
-                #     if question.correct_answer == game_cache_data['']
+                for question in questions:
+                    if str(question.correct_answer.id) == game_cache_data[str(question.id)]['answer_id']:
+                        final_score += question.score
 
-                # Game.objects.create(
-                #     user_id=game_cache_data['user_id'],
-                #     questions=,
-                #     score=[]
-                # )
+                Game.objects.create(
+                    user_id=game_cache_data['user_id'],
+                    questions=questions,
+                    score=final_score
+                )
+                return HttpResponseRedirect(reverse('do-exam', kwargs={'exam_uuid': exam_uuid}))
 
         elif game_cache_data['step_type'] == self.StepType.RESULT:
             game_cache_data['step_type'] = self.StepType.QUESTION
-            game_cache_data['current_step'] +=1
+            game_cache_data['current_step'] += 1
             cache.set(exam_uuid, game_cache_data)
 
-        return HttpResponseRedirect(reverse('exam:ali', kwargs={'exam_uuid': exam_uuid}))
+        return HttpResponseRedirect(reverse('do-exam', kwargs={'exam_uuid': exam_uuid}))
 
     @staticmethod
-    def _get_game_cache_data_and_validate_it(exam_uuid, user):
+    def _get_and_validate_game_cache_data(exam_uuid, user):
         game_cache_data = cache.get(exam_uuid)
         if not game_cache_data:
             raise ValidationError('a')

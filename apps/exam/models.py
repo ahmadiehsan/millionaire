@@ -11,9 +11,9 @@ User = get_user_model()
 
 class Question(BaseModel):
     text = models.CharField(max_length=255, verbose_name=_('Text'))
-    # score = models.IntegerField(
-    #     validators=[MinValueValidator(5), MaxValueValidator(20)], verbose_name=_('Question Score')
-    # )
+    score = models.IntegerField(
+        validators=[MinValueValidator(5), MaxValueValidator(20)], verbose_name=_('Question Score')
+    )
 
     # @property
     # def answers(self):

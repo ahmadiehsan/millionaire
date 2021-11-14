@@ -6,7 +6,7 @@
 {% block title %}Millionaire Game{% endblock %}
 
 {% block content %}
-    <form method="post" action="{% url "exam:ali" exam_uuid=exam_uuid %}">
+    <form method="post" action="{% url "do-exam" exam_uuid=exam_uuid %}">
         {% csrf_token %}
         {{ question }}
         {% for answer in question.answers.all %}
