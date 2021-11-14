@@ -1,7 +1,7 @@
 {% extends 'user/auth_base.html' %}
-{% load static widget_tweaks %}
+{% load static widget_tweaks i18n %}
 
-{% block title %}Sign In{% endblock %}
+{% block title %}{% trans "Sign In" %}{% endblock %}
 
 {% block tab_content %}
     <form
@@ -15,6 +15,6 @@
             {% include 'core/_input_horizontal.html' with field=field %}
         {% endfor %}
 
-        <button type="submit" class="btn btn-danger">Sign In</button>
+        <button type="submit" class="btn btn-danger">{% trans "Sign In" %}</button>
     </form>
 {% endblock %}

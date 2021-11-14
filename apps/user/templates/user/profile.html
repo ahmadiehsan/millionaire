@@ -1,7 +1,7 @@
 {% extends 'core/base.html' %}
-{% load static %}
+{% load static i18n %}
 
-{% block title %}Profile{% endblock %}
+{% block title %}{% trans "Profile" %}{% endblock %}
 
 {% block content %}
     <div class="container">
@@ -21,7 +21,7 @@
 
                             <input type="hidden" name="form_type" value="profile">
 
-                            <button type="submit" class="btn btn-danger">Save</button>
+                            <button type="submit" class="btn btn-danger">{% trans "Save" %}</button>
                         </form>
                     </div>
                 </div>
@@ -29,7 +29,7 @@
             <div class="col-xl-4 mb-4 d-flex align-items-stretch">
                 <div class="card w-100">
                     <div class="card-body">
-                        <h5 class="card-title text-danger">Change Password</h5>
+                        <h5 class="card-title text-danger">{% trans "Change Password" %}</h5>
 
                         <form method="post" action="{% url 'user:profile' %}">
                             {{ change_password_form.non_field_errors }}
@@ -41,7 +41,7 @@
 
                             <input type="hidden" name="form_type" value="change_password">
 
-                            <button type="submit" class="btn btn-danger">Change</button>
+                            <button type="submit" class="btn btn-danger">{% trans "Change" %}</button>
                         </form>
                     </div>
                 </div>

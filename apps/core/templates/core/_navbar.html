@@ -1,10 +1,10 @@
-{% load static %}
+{% load static i18n %}
 
 <nav class="main-navbar navbar navbar-expand-lg navbar-light bg-light mb-5">
     <div class="container">
         <a class="navbar-brand text-danger fw-bold" href="{% url 'core:home' %}">
             <img class="pe-1" src="{% static 'core/images/logo.png' %}" alt="logo" width="30">
-            Millionaire
+            {% trans "Millionaire" %}
         </a>
         <button
                 class="navbar-toggler"
@@ -18,7 +18,7 @@
             <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'core:home' %}">
-                        Home
+                        {% trans "Home" %}
                     </a>
                 </li>
                 {% if user.is_authenticated %}
@@ -37,8 +37,16 @@
                             {% endif %}
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{% url 'user:profile' %}">Profile</a></li>
-                            <li><a class="dropdown-item" href="{% url 'user:sign-out' %}">Sign Out</a></li>
+                            <li>
+                                <a class="dropdown-item" href="{% url 'user:profile' %}">
+                                    {% trans "Profile" %}
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="{% url 'user:sign-out' %}">
+                                    {% trans "Sign Out" %}
+                                </a>
+                            </li>
                         </ul>
                     </li>
                 {% endif %}

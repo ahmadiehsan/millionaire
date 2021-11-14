@@ -1,12 +1,12 @@
 {% extends 'core/base.html' %}
-{% load static %}
+{% load static i18n %}
 
 {% block content %}
     <div class="container">
-        <h3 class="text-center text-danger fw-bold pb-5">Who Wants to Be a Millionaire!</h3>
+        <h3 class="text-center text-danger fw-bold pb-5">{% trans "Who Wants to Be a Millionaire!" %}</h3>
 
         <div class="row">
-            <div class="col-lg-8 offset-2">
+            <div class="col-lg-8 offset-lg-2">
                 <ul class="nav nav-tabs" id="myTab" role="tablist">
                     <li class="nav-item" role="presentation">
                         <a
@@ -14,7 +14,7 @@
                                 href="{% url 'user:sign-up' %}"
                                 role="tab"
                         >
-                            Sign Up
+                            {% trans "Sign Up" %}
                         </a>
                     </li>
                     <li class="nav-item" role="presentation">
@@ -23,7 +23,7 @@
                                 href="{% url 'user:sign-in' %}"
                                 role="tab"
                         >
-                            Sign In
+                            {% trans "Sign In" %}
                         </a>
                     </li>
                 </ul>

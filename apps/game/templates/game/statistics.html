@@ -1,0 +1,50 @@
+{% extends 'core/base.html' %}
+{% load static i18n %}
+
+{% block title %}{% trans "Statistics" %}{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 offset-lg-2">
+                <a href="{% url 'game:game-space' game_identifier='new' %}" class="btn btn-danger btn-lg w-100">
+                    <i class="fa fa-plus-circle"></i>
+                    {% trans "For Starting New Game Click Here" %}
+                </a>
+
+                <ul class="list-group mt-4">
+                    <li class="list-group-item list-group-item-secondary text-center">
+                        {% trans "List of Top Players" %}
+                    </li>
+
+                    {% for top_player in top_players %}
+                        <li class="list-group-item">
+                            {{ forloop.counter }} -
+                            {{ top_player.user__username }}
+                            ({{ top_player.max_score }} {% trans "point" %})
+                        </li>
+                    {% empty %}
+                        <li class="list-group-item text-center">{% trans "There is no game yet!" %}</li>
+                    {% endfor %}
+                </ul>
+
+                <ul class="list-group mt-4">
+                    <li class="list-group-item list-group-item-secondary text-center">
+                        {% trans "My Games" %}
+                    </li>
+
+                    {% for my_game in my_games %}
+                        <li class="list-group-item">
+                            {{ forloop.counter }} -
+                            {{ my_game.create_time }}
+                            ({{ my_game.score }} {% trans "point" %})
+                            <a href="{% url 'game:result' game_id=my_game.id %}">{% trans "Show result" %}</a>
+                        </li>
+                    {% empty %}
+                        <li class="list-group-item text-center">{% trans "There is no game yet!" %}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+{% endblock %}

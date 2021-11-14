@@ -4,7 +4,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.cache import cache
 from django.core.exceptions import ValidationError
 from django.db import transaction
-from django.db.models import Sum
+from django.db.models import Sum, Max
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse, reverse_lazy
@@ -179,4 +179,18 @@ class ResultView(LoginRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context.update({'game': get_object_or_404(Game, id=kwargs['game_id'], user=self.request.user)})
+        return context
+
+
+class StatisticsView(LoginRequiredMixin, TemplateView):
+    template_name = 'game/statistics.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update({
+            'top_players': Game.objects.values(
+                'user__username'
+            ).annotate(max_score=Max('score')).order_by('-max_score')[:10],
+            'my_games': Game.objects.filter(user=self.request.user).order_by('-create_time')
+        })
         return context
